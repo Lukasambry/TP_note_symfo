@@ -27,6 +27,9 @@ class Review
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipe $recipe = null;
 
+    #[ORM\Column]
+    private ?int $recipe_id = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Review
     public function setRecipe(?Recipe $recipe): static
     {
         $this->recipe = $recipe;
+
+        return $this;
+    }
+
+    public function getRecipeId(): ?int
+    {
+        return $this->recipe_id;
+    }
+
+    public function setRecipeId(int $recipe_id): static
+    {
+        $this->recipe_id = $recipe_id;
 
         return $this;
     }

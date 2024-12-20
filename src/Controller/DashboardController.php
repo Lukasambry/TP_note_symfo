@@ -8,16 +8,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController
 {
-    #[Route('/admin/dashboard', name: 'admin_dashboard')]
-    public function adminDashboard(): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        return $this->render('admin/dashboard.html.twig', [
-            'controller_name' => 'Admin Dashboard',
-        ]);
-    }
-
     #[Route('/profile', name: 'app_profile')]
     public function userProfile(): Response
     {
