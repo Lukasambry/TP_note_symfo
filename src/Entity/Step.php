@@ -19,6 +19,9 @@ class Step
     #[ORM\Column]
     private ?int $orderNumber = null;
 
+    #[ORM\ManyToOne(inversedBy: 'steps')]
+    private ?Recipe $recipe = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Step
     public function setOrderNumber(int $orderNumber): static
     {
         $this->orderNumber = $orderNumber;
+
+        return $this;
+    }
+
+    public function getRecipe(): ?Recipe
+    {
+        return $this->recipe;
+    }
+
+    public function setRecipe(?Recipe $recipe): static
+    {
+        $this->recipe = $recipe;
 
         return $this;
     }

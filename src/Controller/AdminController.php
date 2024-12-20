@@ -7,6 +7,7 @@ use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,6 +30,7 @@ final class AdminController extends AbstractController
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
+        $user->setVerified(true);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -71,9 +73,16 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_admin_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, User $user, EntityManagerInterface $entityManager, Security $security): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
+        $currentUser = $security->getUser();
+
+        if ($currentUser === $user) {
+            $this->addFlash('error', 'You cannot delete your own account.');
+            return $this->redirectToRoute('app_admin_index');
+        }
+
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
         }

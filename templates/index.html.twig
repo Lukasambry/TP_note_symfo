@@ -3,99 +3,99 @@
 {% block title %}Bienvenue sur Recettes Gourmandes{% endblock %}
 
 {% block body %}
-    <div class="container mx-auto px-4 py-8">
-        {% if app.user %}
-            {% if is_granted('ROLE_BANNED') %}
-                <div class="alert alert-danger bg-red-100 text-red-700 p-4 rounded mb-8">
-                    Votre compte a été banni.
-                </div>
-                <a href="{{ path('app_logout') }}" class="text-red-500 hover:underline">Déconnexion</a>
+    <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto max-w-7xl">
+            {% if app.user %}
+                {% if is_granted('ROLE_BANNED') %}
+                    <div class="bg-red-100 text-red-700 p-4 rounded-lg shadow-md mb-8">
+                        <p>Votre compte a été banni.</p>
+                        <a href="{{ path('app_logout') }}" class="text-red-500 hover:underline">Déconnexion</a>
+                    </div>
+                {% else %}
+                    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-md mb-8">
+                        <p class="text-lg text-gray-800">Bonjour {{ app.user.firstName }} {{ app.user.lastName }}</p>
+                        <div class="flex space-x-4">
+                            <a href="{{ path('app_logout') }}" class="text-red-500 hover:underline">Déconnexion</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_admin_index') }}" class="text-blue-500 hover:underline">Administration</a>
+                            {% else %}
+                                <a href="{{ path('app_profile') }}" class="text-blue-500 hover:underline">Mon profil</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
             {% else %}
-            <div class="flex justify-between items-center mb-8">
-                <div class="text-lg">Bonjour {{ app.user.firstName }} {{ app.user.lastName }}</div>
-                <div class="space-x-4">
-                    <a href="{{ path('app_logout') }}" class="text-red-500 hover:underline">Déconnexion</a>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_admin_index') }}" class="text-blue-500 hover:underline">Administration</a>
-                    {% endif %}
-                    {% if is_granted('ROLE_USER') %}
-                        <a href="{{ path('app_profile') }}" class="text-blue-500 hover:underline">Mon profil</a>
-                    {% endif %}
+                <div class="text-right mb-8">
+                    <a href="{{ path('app_login') }}" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition duration-300">
+                        Connexion
+                    </a>
                 </div>
-            </div>
             {% endif %}
-        {% else %}
-            <div class="text-right mb-8">
-                <a href="{{ path('app_login') }}" class="text-blue-500 hover:underline">Connexion</a>
-            </div>
-        {% endif %}
 
-        <div class="bg-gradient-to-r from-orange-100 to-yellow-100 py-16 mb-12 rounded-lg shadow-lg">
-            <div class="text-center">
+            <!-- Hero Section -->
+            <div class="bg-white py-16 mb-12 rounded-lg shadow-md text-center">
                 <h1 class="text-4xl font-bold text-gray-800 mb-4">Découvrez nos délicieuses recettes</h1>
-                <p class="text-xl text-gray-600">Cuisinez comme un chef avec nos recettes détaillées</p>
+                <p class="text-lg text-gray-600">Cuisinez comme un chef avec nos recettes détaillées</p>
                 {% if not app.user %}
                     <div class="mt-8">
-                        <a href="{{ path('app_register') }}" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition duration-300">Rejoignez-nous</a>
+                        <a href="{{ path('app_register') }}" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition duration-300">
+                            Rejoignez-nous
+                        </a>
                     </div>
                 {% endif %}
             </div>
-        </div>
 
-        <!-- Dernières Recettes -->
-        <section class="mb-16">
-            <h2 class="text-3xl font-semibold text-center mb-8 border-b-2 border-gray-300 pb-4">Dernières recettes</h2>
-            <div class="flex flex-row flex-wrap gap-8 justify-center">
-                {% for recipe in latest_recipes %}
-                    <div class="bg-white rounded-lg shadow-lg w-72">
-                        <img src="{{ recipe.image ?? 'https://loremflickr.com/400/400/food,gastronomy/all' }}" alt="{{ recipe.name }}" class="w-full h-48 object-cover rounded-t-lg">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold mb-2">{{ recipe.name }}</h3>
-                            <p class="text-gray-600 text-sm mb-4">
-                                {{ recipe.description|slice(0, 80) ~ '...' }}
-                            </p>
-                            <div class="flex justify-between items-center">
+            <!-- Dernières Recettes -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-semibold text-center mb-8 border-b-2 border-gray-300 pb-4">Dernières recettes</h2>
+                <div class="flex flex-wrap gap-8 justify-center">
+                    {% for recipe in latest_recipes %}
+                        <div class="bg-white rounded-lg shadow-md w-72">
+                            <img src="{{ recipe.image ?? 'https://loremflickr.com/400/400/food,gastronomy/all' }}" alt="{{ recipe.name }}" class="w-full h-48 object-cover rounded-t-lg">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold mb-2 text-gray-800">{{ recipe.name }}</h3>
+                                <p class="text-gray-600 text-sm mb-4">{{ recipe.description|slice(0, 80) ~ '...' }}</p>
+                                <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-500">
                                     <i class="fas fa-clock"></i> {{ recipe.preparationTime }} min
                                 </span>
+                                    <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="text-orange-500 hover:underline text-sm">
+                                        Voir la recette →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Séparateur -->
+            <hr class="my-12 border-t-2 border-gray-300">
+
+            <!-- Recettes Populaires -->
+            <section>
+                <h2 class="text-3xl font-semibold text-center mb-8 border-b-2 border-gray-300 pb-4">Recettes populaires</h2>
+                <div class="flex flex-wrap gap-8 justify-center">
+                    {% for recipe in popular_recipes %}
+                        <div class="bg-white rounded-lg shadow-md w-72">
+                            <img src="{{ recipe.image ?? 'https://loremflickr.com/400/400/food,gastronomy/all' }}" alt="{{ recipe.name }}" class="w-full h-48 object-cover rounded-t-lg">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold mb-2 text-gray-800">{{ recipe.name }}</h3>
+                                <div class="flex items-center mb-4">
+                                    {% set avgRating = recipe.reviews|reduce((sum, review) => sum + review.rating, 0) / recipe.reviews|length %}
+                                    {% for i in 1..5 %}
+                                        <i class="fas fa-star {% if i <= avgRating %}text-yellow-400{% else %}text-gray-300{% endif %}"></i>
+                                    {% endfor %}
+                                    <span class="ml-2 text-sm text-gray-500">({{ recipe.reviews|length }} avis)</span>
+                                </div>
                                 <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="text-orange-500 hover:underline text-sm">
                                     Voir la recette →
                                 </a>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </section>
-
-        <!-- Séparateur -->
-        <hr class="my-12 border-t-2 border-gray-300">
-
-        <!-- Recettes Populaires -->
-        <section>
-            <h2 class="text-3xl font-semibold text-center mb-8 border-b-2 border-gray-300 pb-4">Recettes populaires</h2>
-            <div class="flex flex-row flex-wrap gap-8 justify-center">
-                {% for recipe in popular_recipes %}
-                    <div class="bg-white rounded-lg shadow-lg w-72">
-                        <img src="{{ recipe.image ?? 'https://loremflickr.com/400/400/food,gastronomy/all' }}" alt="{{ recipe.name }}" class="w-full h-48 object-cover rounded-t-lg">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold mb-2">{{ recipe.name }}</h3>
-                            <div class="flex items-center mb-4">
-                                {% set avgRating = recipe.reviews|reduce((sum, review) => sum + review.rating, 0) / recipe.reviews|length %}
-                                {% for i in 1..5 %}
-                                    <i class="fas fa-star {% if i <= avgRating %}text-yellow-400{% else %}text-gray-300{% endif %}"></i>
-                                {% endfor %}
-                                <span class="ml-2 text-sm text-gray-500">
-                                    ({{ recipe.reviews|length }} avis)
-                                </span>
-                            </div>
-                            <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="text-orange-500 hover:underline text-sm">
-                                Voir la recette →
-                            </a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </section>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
     </div>
 {% endblock %}

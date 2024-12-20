@@ -115,32 +115,6 @@ class Recipe
         return $this;
     }
 
-    public function getSteps(): Collection
-    {
-        return $this->steps;
-    }
-
-    public function addStep(Step $step): static
-    {
-        if (!$this->steps->contains($step)) {
-            $this->steps->add($step);
-            $step->setRecipe($this); // Assuming Step has a "setRecipe" method
-        }
-
-        return $this;
-    }
-
-    public function removeStep(Step $step): static
-    {
-        if ($this->steps->removeElement($step)) {
-            if ($step->getRecipe() === $this) {
-                $step->setRecipe(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getIngredients(): Collection
     {
         return $this->ingredients;
@@ -196,6 +170,36 @@ class Recipe
     public function setAuthor(User $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Step>
+     */
+    public function getSteps(): Collection
+    {
+        return $this->steps;
+    }
+
+    public function addStep(Step $step): static
+    {
+        if (!$this->steps->contains($step)) {
+            $this->steps->add($step);
+            $step->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStep(Step $step): static
+    {
+        if ($this->steps->removeElement($step)) {
+            // set the owning side to null (unless already changed)
+            if ($step->getRecipe() === $this) {
+                $step->setRecipe(null);
+            }
+        }
 
         return $this;
     }

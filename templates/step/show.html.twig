@@ -3,28 +3,34 @@
 {% block title %}Step{% endblock %}
 
 {% block body %}
-    <h1>Step</h1>
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl w-full bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Step Details</h1>
+            <table class="w-full border border-gray-200 rounded-lg mb-6">
+                <tbody>
+                <tr class="border-b">
+                    <th class="text-left p-4 bg-gray-100">Id</th>
+                    <td class="p-4">{{ step.id }}</td>
+                </tr>
+                <tr class="border-b">
+                    <th class="text-left p-4 bg-gray-100">Description</th>
+                    <td class="p-4">{{ step.description }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left p-4 bg-gray-100">Order Number</th>
+                    <td class="p-4">{{ step.orderNumber }}</td>
+                </tr>
+                </tbody>
+            </table>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ step.id }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ step.description }}</td>
-            </tr>
-            <tr>
-                <th>OrderNumber</th>
-                <td>{{ step.orderNumber }}</td>
-            </tr>
-        </tbody>
-    </table>
+            <div class="flex justify-between">
+                <a href="{{ path('app_step_index') }}" class="text-blue-500 hover:underline">Back to List</a>
+                <a href="{{ path('app_step_edit', {'id': step.id}) }}" class="text-orange-500 hover:underline">Edit</a>
+            </div>
 
-    <a href="{{ path('app_step_index') }}">back to list</a>
-
-    <a href="{{ path('app_step_edit', {'id': step.id}) }}">edit</a>
-
-    {{ include('step/_delete_form.html.twig') }}
+            <div class="mt-6">
+                {{ include('step/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

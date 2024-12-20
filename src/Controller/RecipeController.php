@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Recipe;
 use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
+use App\Service\CsvService;
+use App\Service\PdfService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +51,7 @@ final class RecipeController extends AbstractController
     {
         return $this->render('recipe/show.html.twig', [
             'recipe' => $recipe,
+            'steps' => $recipe->getSteps(),
         ]);
     }
 
@@ -79,5 +82,78 @@ final class RecipeController extends AbstractController
         }
 
         return $this->redirectToRoute('app_recipe_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/recipe/{id}/pdf', name: 'app_recipe_pdf')]
+    public function generatePdf(Recipe $recipe, PdfService $pdfService): Response
+    {
+        $html = $this->renderView('recipe/pdf.html.twig', [
+            'recipe' => $recipe
+        ]);
+
+        $pdfService->showPdf($html);
+        return new Response();
+    }
+
+    #[Route('/recipe/{id}/csv', name: 'app_recipe_csv')]
+    public function exportCsv(Recipe $recipe, CsvService $csvService): Response
+    {
+        $data = [];
+
+        // Informations de base de la recette
+        $recipeData = [
+            'Nom de la recette' => $recipe->getName(),
+            'Description' => $recipe->getDescription(),
+            'Temps de préparation' => $recipe->getPreparationTime() . ' minutes',
+            'Difficulté' => $recipe->getDifficulty(),
+            'Date de création' => $recipe->getCreatedAt()->format('d/m/Y'),
+        ];
+        $data[] = $recipeData;
+
+        // Ligne vide pour la séparation
+        $data[] = array_fill_keys(array_keys($recipeData), '');
+
+        // Ingrédients
+        $data[] = [
+            'Nom de la recette' => 'INGRÉDIENTS',
+            'Description' => '',
+            'Temps de préparation' => '',
+            'Difficulté' => '',
+            'Date de création' => '',
+        ];
+
+        foreach ($recipe->getIngredients() as $ingredient) {
+            $data[] = [
+                'Nom de la recette' => $ingredient->getName(),
+                'Description' => $ingredient->getQuality() . ' ' . $ingredient->getUnit(),
+                'Temps de préparation' => '',
+                'Difficulté' => '',
+                'Date de création' => '',
+            ];
+        }
+
+        // Ligne vide pour la séparation
+        $data[] = array_fill_keys(array_keys($recipeData), '');
+
+        // Étapes
+        $data[] = [
+            'Nom de la recette' => 'ÉTAPES',
+            'Description' => '',
+            'Temps de préparation' => '',
+            'Difficulté' => '',
+            'Date de création' => '',
+        ];
+
+        foreach ($recipe->getSteps() as $step) {
+            $data[] = [
+                'Nom de la recette' => 'Étape ' . $step->getOrderNumber(),
+                'Description' => $step->getDescription(),
+                'Temps de préparation' => '',
+                'Difficulté' => '',
+                'Date de création' => '',
+            ];
+        }
+
+        return $csvService->generateCsvResponse($data, $recipe->getName() . '.csv');
     }
 }

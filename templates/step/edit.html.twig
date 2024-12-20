@@ -3,11 +3,16 @@
 {% block title %}Edit Step{% endblock %}
 
 {% block body %}
-    <h1>Edit Step</h1>
-
-    {{ include('step/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_step_index') }}">back to list</a>
-
-    {{ include('step/_delete_form.html.twig') }}
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl w-full bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Edit Step</h1>
+            {{ include('step/_form.html.twig', {'button_label': 'Update'}) }}
+            <div class="mt-4 flex justify-between">
+                <a href="{{ path('app_step_index') }}" class="text-blue-500 hover:underline">Back to List</a>
+                <div>
+                    {{ include('step/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

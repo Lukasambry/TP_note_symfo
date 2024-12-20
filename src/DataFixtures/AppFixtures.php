@@ -125,6 +125,9 @@ class AppFixtures extends Fixture
             $recipe->setDescription('Description détaillée de la recette');
             $recipe->setPreparationTime(mt_rand(15, 120));
             $recipe->setDifficulty($difficulties[array_rand($difficulties)]);
+            $recipe->addIngredient($ingredients[array_rand($ingredients)]);
+            $recipe->addIngredient($ingredients[array_rand($ingredients)]);
+            $recipe->addIngredient($ingredients[array_rand($ingredients)]);
             $recipe->setAuthor($i % 2 === 0 ? $admin : $user);
             $recipe->setCreatedAt(new \DateTime('-' . mt_rand(1, 365) . ' days'));
 
@@ -132,6 +135,7 @@ class AppFixtures extends Fixture
                 $step = new Step();
                 $step->setDescription('Étape ' . ($j + 1) . ' de la recette ' . ($i + 1));
                 $step->setOrderNumber($j + 1);
+                $step->setRecipe($recipe);
                 $manager->persist($step);
             }
 

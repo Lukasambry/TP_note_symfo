@@ -1,43 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User index{% endblock %}
+{% block title %}User Index{% endblock %}
 
 {% block body %}
-    <h1>User index</h1>
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl w-full bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">User Index</h1>
+            <table class="w-full border border-gray-200 rounded-lg">
+                <thead class="bg-gray-100">
+                <tr>
+                    <th class="text-left p-4">Id</th>
+                    <th class="text-left p-4">Email</th>
+                    <th class="text-left p-4">Roles</th>
+                    <th class="text-left p-4">Is Verified</th>
+                    <th class="text-left p-4">Firstname</th>
+                    <th class="text-left p-4">Lastname</th>
+                    <th class="text-left p-4">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr class="border-b">
+                        <td class="p-4">{{ user.id }}</td>
+                        <td class="p-4">{{ user.email }}</td>
+                        <td class="p-4">{{ user.roles ? user.roles|json_encode : '' }}</td>
+                        <td class="p-4">{{ user.isVerified ? 'Yes' : 'No' }}</td>
+                        <td class="p-4">{{ user.firstname }}</td>
+                        <td class="p-4">{{ user.lastname }}</td>
+                        <td class="p-4">
+                            <a href="{{ path('app_admin_show', {'id': user.id}) }}" class="text-blue-500 hover:underline">Show</a>
+                            <a href="{{ path('app_admin_edit', {'id': user.id}) }}" class="text-orange-500 hover:underline">Edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="p-4 text-center text-gray-500">No records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>IsVerified</th>
-                <th>Firstname</th>
-                <th>Lastname</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
-                <td>{{ user.firstname }}</td>
-                <td>{{ user.lastname }}</td>
-                <td>
-                    <a href="{{ path('app_admin_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ path('app_admin_edit', {'id': user.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_admin_new') }}">Create new</a>
+            <div class="mt-6 text-right">
+                <a href="{{ path('app_admin_new') }}" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">Create New</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

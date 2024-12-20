@@ -2,40 +2,35 @@
 
 namespace App\Form;
 
-use App\Entity\Review;
-use App\Entity\Recipe;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ReviewType extends AbstractType
+class ProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('rating', null, [
+            ->add('email', EmailType::class, [
                 'attr' => [
                     'class' => 'block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm',
+                    'placeholder' => 'Enter user email',
                 ],
             ])
-            ->add('comment', null, [
+            ->add('firstname', TextType::class, [
                 'attr' => [
                     'class' => 'block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm',
+                    'placeholder' => 'Enter first name',
                 ],
             ])
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
+            ->add('lastname', TextType::class, [
                 'attr' => [
                     'class' => 'block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm',
-                ],
-            ])
-            ->add('recipe', EntityType::class, [
-                'class' => Recipe::class,
-                'choice_label' => 'name',
-                'placeholder' => 'Select a recipe',
-                'attr' => [
-                    'class' => 'block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm',
+                    'placeholder' => 'Enter last name',
                 ],
             ]);
     }
@@ -43,7 +38,7 @@ class ReviewType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Review::class,
+            'data_class' => User::class,
         ]);
     }
 }

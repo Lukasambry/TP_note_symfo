@@ -1,39 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Review index{% endblock %}
+{% block title %}Review Index{% endblock %}
 
 {% block body %}
-    <h1>Review index</h1>
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl w-full bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Review Index</h1>
+            <table class="w-full border border-gray-200 rounded-lg">
+                <thead class="bg-gray-100">
+                <tr>
+                    <th class="text-left p-4">Id</th>
+                    <th class="text-left p-4">Rating</th>
+                    <th class="text-left p-4">Comment</th>
+                    <th class="text-left p-4">Created At</th>
+                    <th class="text-left p-4">Recipe</th>
+                    <th class="text-left p-4">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for review in reviews %}
+                    <tr class="border-b">
+                        <td class="p-4">{{ review.id }}</td>
+                        <td class="p-4">{{ review.rating }}</td>
+                        <td class="p-4">{{ review.comment }}</td>
+                        <td class="p-4">{{ review.createdAt ? review.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                        <td class="p-4">
+                            <a href="{{ path('app_recipe_show', {'id': review.recipe.id}) }}" class="text-orange-500 hover:underline">
+                                {{ review.recipe.name }}
+                            </a>
+                        </td>
+                        <td class="p-4">
+                            <a href="{{ path('app_review_show', {'id': review.id}) }}" class="text-blue-500 hover:underline">Show</a>
+                            <a href="{{ path('app_review_edit', {'id': review.id}) }}" class="text-orange-500 hover:underline">Edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="p-4 text-center text-gray-500">No records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Rating</th>
-                <th>Comment</th>
-                <th>CreatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for review in reviews %}
-            <tr>
-                <td>{{ review.id }}</td>
-                <td>{{ review.rating }}</td>
-                <td>{{ review.comment }}</td>
-                <td>{{ review.createdAt ? review.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_review_show', {'id': review.id}) }}">show</a>
-                    <a href="{{ path('app_review_edit', {'id': review.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_review_new') }}">Create new</a>
+            <div class="mt-6 text-right">
+                <a href="{{ path('app_review_new') }}" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">Create New</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
